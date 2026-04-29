@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Logo } from "@/components/ui/logo";
 import portadaHero from "../../../../public/portada.jpg";
 
 export function HeroSection() {

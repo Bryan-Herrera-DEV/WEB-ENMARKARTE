@@ -8,25 +8,25 @@ const contactItems = [
     icon: "location_on",
     title: "Dirección",
     value: siteConfig.address,
-    href: "https://maps.google.com",
+    href: siteConfig.mapUrl,
   },
   {
     icon: "call",
-    title: "Teléfono",
+    title: "Llamada",
     value: siteConfig.phone,
-    href: "tel:+525512345678",
+    href: siteConfig.phoneHref,
+  },
+  {
+    icon: "chat",
+    title: "WhatsApp",
+    value: siteConfig.phone,
+    href: siteConfig.whatsappUrl,
   },
   {
     icon: "mail",
     title: "Correo",
     value: siteConfig.email,
-    href: "mailto:contacto@enmarkarte.com",
-  },
-  {
-    icon: "schedule",
-    title: "Horario",
-    value: "Lunes a Viernes · 10:00 a 18:00",
-    href: "/contacto",
+    href: siteConfig.emailHref,
   },
 ];
 

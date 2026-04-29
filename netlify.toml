@@ -1,0 +1,38 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NETLIFY_NEXT_SKEW_PROTECTION = "true"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "http://enmarkatesk.com/*"
+  to = "https://enmarkatesk.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.enmarkatesk.com/*"
+  to = "https://enmarkatesk.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.enmarkatesk.com/*"
+  to = "https://enmarkatesk.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/sitemap"
+  to = "/sitemap.xml"
+  status = 301
+
+[[redirects]]
+  from = "/robots"
+  to = "/robots.txt"
+  status = 301

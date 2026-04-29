@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { MaterialIcon } from "@/components/ui/material-icon";
 import { Logo } from "@/components/ui/logo";
-import { footerContactLinks } from "@/lib/site";
+import { footerContactLinks, siteConfig } from "@/lib/site";
 
 export function SiteFooter() {
   return (
@@ -24,6 +24,8 @@ export function SiteFooter() {
             <Link
               key={`${item.href}-${item.label}`}
               href={item.href}
+              target={item.href.startsWith("http") ? "_blank" : undefined}
+              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
               className="text-stone-500 font-sans text-xs uppercase tracking-widest hover:text-red-700 transition-colors"
             >
               {item.label}
@@ -38,15 +40,17 @@ export function SiteFooter() {
             <span className="font-sans text-xs uppercase tracking-widest">Envíos internacionales disponibles</span>
           </div>
           <div className="mt-8 flex gap-4" aria-label="Redes sociales">
-            <span className="text-stone-400 hover:text-primary cursor-pointer transition-colors">
-              <MaterialIcon name="brand_awareness" />
-            </span>
-            <span className="text-stone-400 hover:text-primary cursor-pointer transition-colors">
-              <MaterialIcon name="photo_camera" />
-            </span>
-            <span className="text-stone-400 hover:text-primary cursor-pointer transition-colors">
-              <MaterialIcon name="share" />
-            </span>
+            {siteConfig.socialLinks.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-stone-500 font-sans text-xs uppercase tracking-widest hover:text-red-700 transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

@@ -26,21 +26,31 @@ const notoSerif = Noto_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
+  applicationName: siteConfig.shortName,
   title: {
     default: "Enmarkarte – De Chávez Santamaría | Enmarcado Profesional",
     template: "%s | Enmarkarte",
   },
   description: siteConfig.description,
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "Arte y enmarcado profesional",
   keywords: [
     "enmarcado profesional",
     "restauración de obras",
     "taller de marcos",
     "conservación de arte",
-    "Ciudad de México",
+    "Quito",
+    "Ecuador",
     "Enmarkarte",
   ],
   alternates: {
     canonical: "/",
+  },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
   openGraph: {
     type: "website",
@@ -63,6 +73,12 @@ export const metadata: Metadata = {
     title: "Enmarkarte – De Chávez Santamaría | Enmarcado Profesional",
     description: siteConfig.description,
     images: [images.hero],
+  },
+  other: {
+    "geo.region": "EC-P",
+    "geo.placename": "Quito",
+    "geo.position": `${siteConfig.latitude};${siteConfig.longitude}`,
+    ICBM: `${siteConfig.latitude}, ${siteConfig.longitude}`,
   },
   robots: {
     index: true,
@@ -90,15 +106,24 @@ const localBusinessSchema = {
   description: siteConfig.description,
   foundingDate: "1973",
   url: siteConfig.url,
+  image: `${siteConfig.url}/logo.png`,
   email: siteConfig.email,
   telephone: siteConfig.phone,
+  hasMap: siteConfig.mapUrl,
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Calle de la Artesanía 45",
-    addressLocality: "Ciudad de México",
-    addressRegion: "CDMX",
-    addressCountry: "MX",
+    streetAddress: "Venezuela 13-70",
+    postalCode: "170130",
+    addressLocality: "Quito",
+    addressRegion: "Pichincha",
+    addressCountry: "EC",
   },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: siteConfig.latitude,
+    longitude: siteConfig.longitude,
+  },
+  sameAs: siteConfig.socialLinks.map((item) => item.href),
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

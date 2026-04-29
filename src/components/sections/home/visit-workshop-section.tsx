@@ -1,8 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { MaterialIcon } from "@/components/ui/material-icon";
-import { images } from "@/lib/assets";
 import { siteConfig } from "@/lib/site";
 
 export function VisitWorkshopSection() {
@@ -11,13 +9,15 @@ export function VisitWorkshopSection() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
           <div className="lg:col-span-2">
-            <div className="aspect-video relative mb-8 ghost-border">
-              <Image
-                src={images.gallery}
-                alt="Wide angle shot of a minimalist art gallery with clean white walls and perfectly spaced framed artworks"
-                fill
-                sizes="(min-width: 1024px) 66vw, 100vw"
-                className="object-cover grayscale opacity-50"
+            <div className="aspect-video relative mb-8 ghost-border overflow-hidden bg-surface-container-low">
+              <iframe
+                src={siteConfig.mapEmbedUrl}
+                title="Ubicación de Enmarkarte en Google Maps"
+                className="h-full w-full"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
           </div>
