@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/sections/home/hero-section";
 import { LegacySection } from "@/components/sections/home/legacy-section";
 import { ServicesSection } from "@/components/sections/home/services-section";
 import { VisitWorkshopSection } from "@/components/sections/home/visit-workshop-section";
+import { WorksMarqueeSection } from "@/components/sections/home/works-marquee-section";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
@@ -17,6 +18,7 @@ export default function HomePage() {
     <main className="pt-20">
       <HeroSection />
       <AboutSection />
+      <WorksMarqueeSection />
       <ServicesSection />
       <LegacySection />
       <VisitWorkshopSection />
