@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/logo.png",
+    icon: "/favicon.ico",
     apple: "/logo.png",
   },
   openGraph: {
