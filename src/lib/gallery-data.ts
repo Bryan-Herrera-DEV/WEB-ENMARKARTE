@@ -8,10 +8,16 @@ export type GalleryArtwork = {
   dimensiones: string;
   tecnicas: string[];
   marco: string;
+  precio?: number;
   seoTitle: string;
   seoDescription: string;
   alt: string;
 };
+
+export const galleryProductOffer = {
+  priceCurrency: "USD",
+  fallbackPriceLabel: "Precio a consultar",
+} as const;
 
 export const galleryConfig = {
   tecnicas: [
@@ -668,6 +674,26 @@ export const galleryArtworks: GalleryArtwork[] = [
 export function getArtworkByImageName(imageName?: string | null) {
   if (!imageName) return undefined;
   return galleryArtworks.find((artwork) => artwork.imageName.toLowerCase() === imageName.toLowerCase());
+}
+
+export function getArtworkProductName(artwork: Pick<GalleryArtwork, "nombre">) {
+  return artwork.nombre.toLowerCase().startsWith("cuadro ") ? artwork.nombre : `Cuadro ${artwork.nombre}`;
+}
+
+export function getArtworkPriceLabel(artwork: Pick<GalleryArtwork, "precio">) {
+  if (typeof artwork.precio === "number") {
+    return new Intl.NumberFormat("es-EC", {
+      style: "currency",
+      currency: galleryProductOffer.priceCurrency,
+      maximumFractionDigits: 0,
+    }).format(artwork.precio);
+  }
+
+  return galleryProductOffer.fallbackPriceLabel;
+}
+
+export function getArtworkCanonicalPath(artwork: Pick<GalleryArtwork, "imageName">) {
+  return `/galeria?img=${encodeURIComponent(artwork.imageName)}`;
 }
 
 export function getCategoryFromSearchParam(category?: string | null) {

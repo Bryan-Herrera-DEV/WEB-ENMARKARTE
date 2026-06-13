@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Enmarkarte – De Chávez Santamaría",
   shortName: "Enmarkarte",
   description:
-    "Enmarcado profesional, restauración y conservación de arte desde 1973 en Quito, Ecuador.",
+    "Marcos para cuadros Quito, marqueria, enmarcado profesional, restauración y conservación de arte desde 1973 en Quito, Ecuador.",
   url: "https://enmarkatesk.com",
   locale: "es_EC",
   phone: "+593 999905422",
@@ -38,3 +38,7 @@ export const footerContactLinks = [
   { href: siteConfig.whatsappUrl, label: "WhatsApp" },
   { href: siteConfig.emailHref, label: "Email" },
 ] as const;
+
+export function buildWhatsAppUrl(message: string) {
+  return `${siteConfig.whatsappUrl}?text=${encodeURIComponent(message)}`;
+}

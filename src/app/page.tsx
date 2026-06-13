@@ -7,9 +7,9 @@ import { WorksMarqueeSection } from "@/components/sections/home/works-marquee-se
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Enmarcado profesional y restauración",
+  title: "Marcos para cuadros Quito y enmarcado profesional",
   description:
-    "Enmarkarte ofrece enmarcado profesional, restauración y soluciones de conservación para obras de arte desde 1973.",
+    "Enmarkarte ofrece marcos para cuadros Quito, marqueria, enmarcado de cuadros, restauracion y conservacion de arte desde 1973.",
   path: "/",
 });
 

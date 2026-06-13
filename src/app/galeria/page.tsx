@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 
 import { ArtGallerySection } from "@/components/sections/galeria/art-gallery-section";
-import { galleryArtworks, getArtworkByImageName, getCategoryFromSearchParam } from "@/lib/gallery-data";
+import {
+  galleryArtworks,
+  galleryProductOffer,
+  getArtworkByImageName,
+  getArtworkCanonicalPath,
+  getArtworkProductName,
+  getCategoryFromSearchParam,
+  type GalleryArtwork,
+} from "@/lib/gallery-data";
 import { buildPageMetadata } from "@/lib/seo";
-import { siteConfig } from "@/lib/site";
+import { buildWhatsAppUrl, siteConfig } from "@/lib/site";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 type PageProps = {
@@ -15,6 +24,77 @@ function getSingleParam(value: string | string[] | undefined) {
   return value;
 }
 
+function formatCategoryLabel(category: string) {
+  if (category === "todas") return "todos";
+  return category;
+}
+
+function getCategoryCanonicalPath(category: string) {
+  return category === "todas" ? "/galeria" : `/galeria?cat=${encodeURIComponent(category)}`;
+}
+
+function getArtworkAbsoluteUrl(artwork: GalleryArtwork) {
+  return `${siteConfig.url}${getArtworkCanonicalPath(artwork)}`;
+}
+
+function getArtworkSeoDescription(artwork: GalleryArtwork) {
+  return `${getArtworkProductName(artwork)} en Quito. Tecnica: ${artwork.tecnicas.join(", ")}. Autor: ${artwork.autor || "Enmarkarte"}. Dimensiones: ${artwork.dimensiones || "a confirmar"}. Marco: ${artwork.marco || "a confirmar"}. Compra o cotiza por WhatsApp.`;
+}
+
+function buildProductSchema(artwork: GalleryArtwork) {
+  const artworkUrl = getArtworkAbsoluteUrl(artwork);
+  const offer: Record<string, unknown> = {
+    "@type": "Offer",
+    url: artworkUrl,
+    priceCurrency: galleryProductOffer.priceCurrency,
+    availability: "https://schema.org/InStock",
+    itemCondition: "https://schema.org/NewCondition",
+    seller: {
+      "@type": "ArtGallery",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+  };
+
+  if (typeof artwork.precio === "number") {
+    offer.price = artwork.precio.toFixed(2);
+  } else {
+    offer.priceSpecification = {
+      "@type": "PriceSpecification",
+      priceCurrency: galleryProductOffer.priceCurrency,
+      description: "Precio a consultar por WhatsApp en Quito",
+    };
+  }
+
+  return {
+    "@type": "Product",
+    additionalType: "https://schema.org/VisualArtwork",
+    name: getArtworkProductName(artwork),
+    image: `${siteConfig.url}${artwork.imageSrc}`,
+    description: getArtworkSeoDescription(artwork),
+    sku: artwork.id,
+    brand: {
+      "@type": "Brand",
+      name: siteConfig.shortName,
+    },
+    category: `Cuadros ${artwork.tecnicas.join(", ")} en Quito`,
+    material: artwork.tecnicas.join(", "),
+    url: artworkUrl,
+    offers: offer,
+    additionalProperty: [
+      { "@type": "PropertyValue", name: "Tecnica", value: artwork.tecnicas.join(", ") },
+      { "@type": "PropertyValue", name: "Autor", value: artwork.autor || "Enmarkarte" },
+      { "@type": "PropertyValue", name: "Dimensiones", value: artwork.dimensiones || "A confirmar" },
+      { "@type": "PropertyValue", name: "Marco", value: artwork.marco || "A confirmar" },
+    ],
+    potentialAction: {
+      "@type": "CommunicateAction",
+      name: "Comprar por WhatsApp",
+      target: buildWhatsAppUrl(`Hola, quiero comprar o cotizar ${getArtworkProductName(artwork)} en Quito. Enlace: ${artworkUrl}`),
+    },
+  };
+}
+
 async function resolveSearchParams(searchParams?: Promise<SearchParams>) {
   return (await searchParams) ?? {};
 }
@@ -22,24 +102,31 @@ async function resolveSearchParams(searchParams?: Promise<SearchParams>) {
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const params = await resolveSearchParams(searchParams);
   const imageName = getSingleParam(params.img);
+  const selectedCategory = getCategoryFromSearchParam(getSingleParam(params.cat));
   const selectedArtwork = getArtworkByImageName(imageName);
 
   if (!selectedArtwork) {
+    const categoryLabel = formatCategoryLabel(selectedCategory);
+
     return buildPageMetadata({
-      title: "Galeria",
+      title: selectedCategory === "todas" ? "Galeria de cuadros en Quito" : `Cuadros ${categoryLabel} en Quito`,
       description:
-        "Explora una seleccion visual del trabajo de Enmarkarte con filtro por categoria y vista individual SEO para cada obra.",
-      path: "/galeria",
+        selectedCategory === "todas"
+          ? "Explora cuadros en Quito de Enmarkarte con enlaces canonicos, compra por WhatsApp, marqueria y enmarcado de cuadros en Quito."
+          : `Explora cuadros ${categoryLabel} en Quito con compra por WhatsApp, marcos para cuadros Quito y enmarcado de cuadros en Quito.`,
+      path: getCategoryCanonicalPath(selectedCategory),
     });
   }
 
-  const canonicalPath = `/galeria?img=${encodeURIComponent(selectedArtwork.imageName)}`;
+  const canonicalPath = getArtworkCanonicalPath(selectedArtwork);
   const absoluteCanonical = `${siteConfig.url}${canonicalPath}`;
   const absoluteImage = `${siteConfig.url}${selectedArtwork.imageSrc}`;
+  const productTitle = `${getArtworkProductName(selectedArtwork)} en Quito | ${selectedArtwork.tecnicas.join(", ")}`;
+  const productDescription = getArtworkSeoDescription(selectedArtwork);
 
   return {
-    title: selectedArtwork.seoTitle,
-    description: selectedArtwork.seoDescription,
+    title: productTitle,
+    description: productDescription,
     alternates: {
       canonical: canonicalPath,
     },
@@ -48,8 +135,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
       locale: siteConfig.locale,
       siteName: siteConfig.name,
       url: absoluteCanonical,
-      title: selectedArtwork.seoTitle,
-      description: selectedArtwork.seoDescription,
+      title: productTitle,
+      description: productDescription,
       images: [
         {
           url: absoluteImage,
@@ -61,8 +148,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     },
     twitter: {
       card: "summary_large_image",
-      title: selectedArtwork.seoTitle,
-      description: selectedArtwork.seoDescription,
+      title: productTitle,
+      description: productDescription,
       images: [absoluteImage],
     },
   };
@@ -70,37 +157,47 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
 export default async function GaleriaPage({ searchParams }: PageProps) {
   const params = await resolveSearchParams(searchParams);
+  const rawImageName = getSingleParam(params.img);
+  const rawCategory = getSingleParam(params.cat);
   const selectedCategory = getCategoryFromSearchParam(getSingleParam(params.cat));
-  const selectedArtwork = getArtworkByImageName(getSingleParam(params.img));
+  const selectedArtwork = getArtworkByImageName(rawImageName);
+  const listedArtworks =
+    selectedCategory === "todas"
+      ? galleryArtworks
+      : galleryArtworks.filter((artwork) => artwork.tecnicas.some((tecnica) => tecnica.toLowerCase() === selectedCategory.toLowerCase()));
+
+  if (selectedArtwork && (rawCategory || rawImageName !== selectedArtwork.imageName)) {
+    permanentRedirect(getArtworkCanonicalPath(selectedArtwork));
+  }
+
+  const pageUrl = selectedArtwork
+    ? getArtworkAbsoluteUrl(selectedArtwork)
+    : `${siteConfig.url}${getCategoryCanonicalPath(selectedCategory)}`;
 
   const gallerySchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: selectedArtwork ? selectedArtwork.seoTitle : "Galeria de obras Enmarkarte",
+    name: selectedArtwork
+      ? getArtworkProductName(selectedArtwork)
+      : selectedCategory === "todas"
+        ? "Galeria de cuadros en Quito"
+        : `Cuadros ${formatCategoryLabel(selectedCategory)} en Quito`,
     description: selectedArtwork
-      ? selectedArtwork.seoDescription
-      : "Galeria de obras con miniaturas, filtros por tecnica y vistas individuales optimizadas para SEO.",
-    url: selectedArtwork
-      ? `${siteConfig.url}/galeria?img=${encodeURIComponent(selectedArtwork.imageName)}`
-      : `${siteConfig.url}/galeria`,
+      ? getArtworkSeoDescription(selectedArtwork)
+      : "Galeria de cuadros en Quito con miniaturas, filtros por tecnica, productos con WhatsApp y enlaces internos canonicos.",
+    url: pageUrl,
     mainEntity: selectedArtwork
-      ? {
-          "@type": "VisualArtwork",
-          name: selectedArtwork.nombre,
-          image: `${siteConfig.url}${selectedArtwork.imageSrc}`,
-          description: selectedArtwork.seoDescription,
-          artMedium: selectedArtwork.tecnicas.join(", "),
-          artist: {
-            "@type": "Person",
-            name: selectedArtwork.autor || "No especificado",
-          },
-        }
-      : galleryArtworks.slice(0, 8).map((artwork) => ({
-          "@type": "VisualArtwork",
-          name: artwork.nombre,
-          image: `${siteConfig.url}${artwork.imageSrc}`,
-          description: artwork.seoDescription,
-        })),
+      ? buildProductSchema(selectedArtwork)
+      : {
+          "@type": "ItemList",
+          itemListElement: listedArtworks.map((artwork, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: getArtworkAbsoluteUrl(artwork),
+            name: getArtworkProductName(artwork),
+            item: buildProductSchema(artwork),
+          })),
+        },
   };
 
   return (

@@ -21,7 +21,7 @@ export function HeroSection() {
 
       <div className="relative z-10 max-w-4xl">
         <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl text-on-surface leading-[1.1] tracking-tighter mb-8">
-          Cuidamos la forma en que el arte se presenta al mundo.
+          Marcos para cuadros Quito con enmarcado profesional para su arte.
         </h1>
 
         <p className="font-body text-xl md:text-2xl text-on-surface-variant max-w-2xl mb-12">

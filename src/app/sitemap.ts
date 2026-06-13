@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { galleryArtworks } from "@/lib/gallery-data";
+import { galleryArtworks, galleryConfig, getArtworkCanonicalPath } from "@/lib/gallery-data";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -19,12 +19,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const artworkEntries: MetadataRoute.Sitemap = galleryArtworks.map((artwork) => ({
-    url: `${siteConfig.url}/galeria?img=${encodeURIComponent(artwork.imageName)}`,
+    url: `${siteConfig.url}${getArtworkCanonicalPath(artwork)}`,
     lastModified,
     changeFrequency: "weekly",
     priority: 0.7,
     images: [`${siteConfig.url}${artwork.imageSrc}`],
   }));
 
-  return [...staticEntries, ...artworkEntries];
+  const categoryEntries: MetadataRoute.Sitemap = galleryConfig.tecnicas.map((category) => ({
+    url: `${siteConfig.url}/galeria?cat=${encodeURIComponent(category)}`,
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.65,
+    images: galleryArtworks
+      .filter((artwork) => artwork.tecnicas.some((tecnica) => tecnica.toLowerCase() === category.toLowerCase()))
+      .map((artwork) => `${siteConfig.url}${artwork.imageSrc}`),
+  }));
+
+  return [...staticEntries, ...categoryEntries, ...artworkEntries];
 }

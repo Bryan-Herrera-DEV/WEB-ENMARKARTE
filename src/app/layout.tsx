@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Noto_Serif } from "next/font/google";
 
+import { FloatingWhatsAppButton } from "@/components/layout/floating-whatsapp-button";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { images } from "@/lib/assets";
@@ -41,6 +42,11 @@ export const metadata: Metadata = {
     "restauración de obras",
     "taller de marcos",
     "conservación de arte",
+    "marqueria Quito",
+    "enmarcar cuadros Quito",
+    "marcos para cuadros Quito",
+    "enmarcar cuadros cerca de mi Quito",
+    "enmarcado de cuadros Quito",
     "Quito",
     "Ecuador",
     "Enmarkarte",
@@ -134,6 +140,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <SiteHeader />
           <div className="flex-1">{children}</div>
           <SiteFooter />
+          <FloatingWhatsAppButton />
         </div>
         <script
           type="application/ld+json"
