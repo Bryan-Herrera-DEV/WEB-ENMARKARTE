@@ -9,9 +9,11 @@ type SeoOptions = {
   path: string;
 };
 
-export function buildPageMetadata({ title, description, path }: SeoOptions): Metadata {
+export function buildPageMetadata({ title: tt, description, path }: SeoOptions): Metadata {
   const canonical = path.startsWith("/") ? path : `/${path}`;
   const absoluteUrl = `${siteConfig.url}${canonical}`;
+
+  const title = tt + ` | Enmarcaciones Enmarkarte`;
 
   return {
     title,

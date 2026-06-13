@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   applicationName: siteConfig.shortName,
   title: {
     default: "Enmarkarte – De Chávez Santamaría | Enmarcado Profesional",
-    template: "%s | Enmarkarte",
+    template: "%s | Enmarkarte Enmarcaciones",
   },
   description: siteConfig.description,
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
-  category: "Arte y enmarcado profesional",
+  category: "Arte, Enmarcaciones y enmarcado profesional",
   keywords: [
     "enmarcado profesional",
     "restauración de obras",
@@ -49,6 +49,7 @@ export const metadata: Metadata = {
     "Quito",
     "Ecuador",
     "Enmarkarte",
+    "Enmarcaciones"
   ],
   alternates: {
     canonical: "/",
