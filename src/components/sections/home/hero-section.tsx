@@ -12,6 +12,8 @@ export function HeroSection() {
           alt="Close-up of artisan hands meticulously assembling a gold leaf frame on a classical painting in a sunlit studio"
           fill
           priority
+          loading="eager"
+          fetchPriority="high"
           placeholder="blur"
           sizes="100vw"
           className="object-cover brightness-[0.9]"

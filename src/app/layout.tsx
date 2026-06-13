@@ -7,7 +7,6 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { images } from "@/lib/assets";
 import { siteConfig } from "@/lib/site";
 
-import "material-symbols/outlined.css";
 import "./globals.css";
 
 const manrope = Manrope({
